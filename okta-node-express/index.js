@@ -18,18 +18,18 @@ app.get('/', auth.protected, function (req, res){
 	  res.end("Hello " + JSON.parse(req.session.passport.user).email);
 });
 
-app.get('/json', auth.protected, function (req, res){
+app.get('/saml-jwt/json', auth.protected, function (req, res){
     res.setHeader('Content-Type', 'application/json');
 	  res.send(req.session.passport.user);
 });
 
-app.post('/login/callback', auth.authenticate('saml', { failureRedirect: '/', failureFlash: true }), function (req, res) {
-    res.redirect('/json');
+app.post('/saml-jwt/login/callback', auth.authenticate('saml', { failureRedirect: '/', failureFlash: true }), function (req, res) {
+    res.redirect('/saml-jwt/json');
   }
 );
 
-app.get('/login', auth.authenticate('saml', { failureRedirect: '/', failureFlash: true }), function (req, res) {
-    res.redirect('/json');
+app.get('/saml-jwt/login', auth.authenticate('saml', { failureRedirect: '/', failureFlash: true }), function (req, res) {
+    res.redirect('/saml-jwt/json');
   }
 );
 
