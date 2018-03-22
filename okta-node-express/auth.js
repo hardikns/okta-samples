@@ -20,11 +20,12 @@ function findByEmail(email, fn) {
 //   this will be as simple as storing the user ID when serializing, and finding
 //   the user by ID when deserializing.
 passport.serializeUser(function(user, done) {
-  done(null, user.email);
+  done(null, JSON.stringify(user));
 });
 
-passport.deserializeUser(function(id, done) {
-  findByEmail(id, function (err, user) {
+passport.deserializeUser(function(str, done) {
+  email = JSON.parse(str).email;
+  findByEmail(email, function (err, user) {
     done(err, user);
   });
 });

@@ -15,20 +15,21 @@ app.configure(function() {
 });
 
 app.get('/', auth.protected, function (req, res){
-	  res.end("Hello " + req.session.passport.user);
+	  res.end("Hello " + JSON.parse(req.session.passport.user).email);
 });
 
-app.get('/hello', auth.protected, function (req, res){
-	  res.end("Hello World!");
+app.get('/json', auth.protected, function (req, res){
+    res.setHeader('Content-Type', 'application/json');
+	  res.send(req.session.passport.user);
 });
 
 app.post('/login/callback', auth.authenticate('saml', { failureRedirect: '/', failureFlash: true }), function (req, res) {
-    res.redirect('/');
+    res.redirect('/json');
   }
 );
 
 app.get('/login', auth.authenticate('saml', { failureRedirect: '/', failureFlash: true }), function (req, res) {
-    res.redirect('/');
+    res.redirect('/json');
   }
 );
 
