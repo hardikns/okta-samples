@@ -1,6 +1,7 @@
 var express = require('express'),
     connect = require('connect'),
-    auth = require('./auth');
+    auth = require('./auth').passport,
+    findByToken = require('./auth').findByToken;
 
 var app = express();
 
@@ -18,13 +19,20 @@ app.get('/', auth.protected, function (req, res){
 	  res.end("Hello " + JSON.parse(req.session.passport.user).email);
 });
 
-app.get('/saml-jwt/json', auth.protected, function (req, res){
-    res.setHeader('Content-Type', 'application/json');
-	  res.send(req.session.passport.user);
+app.post('/saml-jwt/json', function (req, res){
+    console.log(req.body.token);
+    var user = findByToken(req.body.token);
+    if (user) {
+      res.setHeader('Content-Type', 'application/json');
+      res.send(user);
+    } else {
+      res.status(404).send("Not Found")
+    }
+
 });
 
 app.post('/saml-jwt/login/callback', auth.authenticate('saml', { failureRedirect: '/', failureFlash: true }), function (req, res) {
-    res.redirect('/saml-jwt/json');
+    res.redirect('http://localhost/?token=' + JSON.parse(req.session.passport.user).token);
   }
 );
 

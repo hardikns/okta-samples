@@ -1,6 +1,7 @@
 var passport = require('passport'),
   SamlStrategy = require('passport-saml').Strategy,
-  config = require('./config.json');
+  config = require('./config.json'),
+  uuidv4 = require('uuid/v4');
 
 var users = [];
 
@@ -12,6 +13,18 @@ function findByEmail(email, fn) {
     }
   }
   return fn(null, null);
+}
+
+function findByToken(token) {
+  for (var i = 0, len = users.length; i < len; i++) {
+    var user = users[i];
+    if (user.token === token) {
+      users.splice(i,1);
+      console.log(users);
+      return user;
+    }
+  }
+  return null;
 }
 
 // Passport session setup.
@@ -47,6 +60,7 @@ passport.use(new SamlStrategy(
           return done(err);
         }
         if (!user) {
+          profile.token = uuidv4();
           users.push(profile);
           return done(null, profile);
         }
@@ -63,4 +77,7 @@ passport.protected = function protected(req, res, next) {
   res.redirect('/login');
 };
 
- exports = module.exports = passport;
+ exports = module.exports = {
+   passport: passport,
+   findByToken: findByToken
+ };

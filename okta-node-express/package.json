@@ -12,6 +12,7 @@
     "express": "~3.5.0",
     "passport-saml": "git://github.com/pawanvshah/passport-saml.git",
     "passport": "^0.2.0",
-    "connect": "^2.14.3"
+    "connect": "^2.14.3",
+    "uuid": "^3.2.1"
   }
 }
