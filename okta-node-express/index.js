@@ -16,10 +16,10 @@ app.configure(function() {
 });
 
 app.get('/', auth.protected, function (req, res){
-	  res.end("Hello " + JSON.parse(req.session.passport.user).email);
+  res.redirect('/auth/redirect');
 });
 
-app.post('/saml-jwt/json', function (req, res){
+app.post('/validate', function (req, res){
     console.log(req.body.token);
     var user = findByToken(req.body.token);
     if (user) {
@@ -28,18 +28,21 @@ app.post('/saml-jwt/json', function (req, res){
     } else {
       res.status(404).send("Not Found")
     }
-
 });
 
-app.post('/saml-jwt/login/callback', auth.authenticate('saml', { failureRedirect: '/', failureFlash: true }), function (req, res) {
-    res.redirect('http://localhost/?token=' + JSON.parse(req.session.passport.user).token);
+app.get('/auth/redirect', auth.protected, function (req, res){
+  res.redirect('http://localhost/?code=' + JSON.parse(req.session.passport.user).token);
+});
+
+app.post('/saml/callback', auth.authenticate('saml', { failureRedirect: '/', failureFlash: true }), function (req, res) {
+    res.redirect('/auth/redirect');
   }
 );
 
-app.get('/saml-jwt/login', auth.authenticate('saml', { failureRedirect: '/', failureFlash: true }), function (req, res) {
-    res.redirect('/saml-jwt/json');
+app.get('/authorize', auth.authenticate('saml', { failureRedirect: '/', failureFlash: true }), function (req, res) {
+    res.redirect('/auth/redirect');
   }
 );
 
-app.listen(process.env.PORT || 3000);
+app.listen(process.env.PORT || 8080);
 console.log("Server started");

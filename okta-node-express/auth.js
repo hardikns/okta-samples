@@ -74,7 +74,7 @@ passport.protected = function protected(req, res, next) {
   if (req.isAuthenticated()) {
     return next();
   }
-  res.redirect('/login');
+  res.redirect('/authorize');
 };
 
  exports = module.exports = {
