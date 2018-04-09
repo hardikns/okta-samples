@@ -20,8 +20,8 @@ app.get('/', auth.protected, function (req, res){
 });
 
 app.post('/validate', function (req, res){
-    console.log(req.body.token);
-    var user = findByToken(req.body.token);
+    console.log(req.body.code);
+    var user = findByToken(req.body.code);
     if (user) {
       res.setHeader('Content-Type', 'application/json');
       res.send(user);
