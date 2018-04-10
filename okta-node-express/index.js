@@ -31,7 +31,7 @@ app.post('/validate', function (req, res){
 });
 
 app.get('/auth/redirect', auth.protected, function (req, res){
-  res.redirect('http://localhost/?code=' + JSON.parse(req.session.passport.user).token);
+  res.redirect('loyaltypay://?code=' + JSON.parse(req.session.passport.user).token);
 });
 
 app.post('/saml/callback', auth.authenticate('saml', { failureRedirect: '/', failureFlash: true }), function (req, res) {
